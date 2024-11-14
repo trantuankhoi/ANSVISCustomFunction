@@ -36,6 +36,12 @@
     <ClCompile Include="src\ada_face.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\face_database.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="create_db.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\ort_handler.h">
@@ -86,10 +92,15 @@
     <ClInclude Include="src\ada_face.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\face_database.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="scrfd_10g_bnkps.onnx" />
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime_providers_shared.dll" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="largest_selfie.jpg">

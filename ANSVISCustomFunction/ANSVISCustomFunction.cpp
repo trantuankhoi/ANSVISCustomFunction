@@ -2,7 +2,7 @@
 #include <filesystem>
 
 
-int main(int argc, char* argv[]) {
+int main1(int argc, char* argv[]) {
 	std::string face_detection_path = "D:\\FTECH\\01_Project\\SVL\\ANSVISCustomFunction\\ANSVISCustomFunction\\scrfd_10g_bnkps.onnx";
 	std::string face_extraction_path = "D:\\FTECH\\01_Project\\SVL\\ANSVISCustomFunction\\ANSVISCustomFunction\\adaface_ir_101_webface4m.onnx";
 	std::string test_img_path = "D:\\FTECH\\01_Project\\SVL\\ANSVISCustomFunction\\ANSVISCustomFunction\\largest_selfie.jpg";

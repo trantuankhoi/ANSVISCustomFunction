@@ -129,11 +129,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="create_db.cpp" />
     <ClCompile Include="src\ada_face.cpp" />
     <ClCompile Include="src\affine_alignment.cpp" />
     <ClCompile Include="ANSVISCustomFunction.cpp" />
     <ClCompile Include="src\core\ort_handler.cpp" />
     <ClCompile Include="src\core\ort_utils.cpp" />
+    <ClCompile Include="src\face_database.cpp" />
     <ClCompile Include="src\scrfd.cpp" />
     <ClCompile Include="src\utils.cpp" />
   </ItemGroup>
@@ -148,6 +150,7 @@
     <ClInclude Include="src\core\ort_handler.h" />
     <ClInclude Include="src\core\ort_types.h" />
     <ClInclude Include="src\core\ort_utils.h" />
+    <ClInclude Include="src\face_database.h" />
     <ClInclude Include="src\lite.ai.defs.h" />
     <ClInclude Include="src\lite.ai.headers.h" />
     <ClInclude Include="src\lite.h" />
@@ -166,6 +169,7 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\opencv4.2.2020.5.26\build\native\opencv4.2.targets" Condition="Exists('..\packages\opencv4.2.2020.5.26\build\native\opencv4.2.targets')" />
     <Import Project="..\packages\Microsoft.ML.OnnxRuntime.1.20.0\build\native\Microsoft.ML.OnnxRuntime.targets" Condition="Exists('..\packages\Microsoft.ML.OnnxRuntime.1.20.0\build\native\Microsoft.ML.OnnxRuntime.targets')" />
+    <Import Project="..\packages\Google.Protobuf.Tools.3.28.3\build\Google.Protobuf.Tools.targets" Condition="Exists('..\packages\Google.Protobuf.Tools.3.28.3\build\Google.Protobuf.Tools.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -174,5 +178,6 @@
     <Error Condition="!Exists('..\packages\opencv4.2.2020.5.26\build\native\opencv4.2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\opencv4.2.2020.5.26\build\native\opencv4.2.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ML.OnnxRuntime.1.20.0\build\native\Microsoft.ML.OnnxRuntime.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.OnnxRuntime.1.20.0\build\native\Microsoft.ML.OnnxRuntime.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ML.OnnxRuntime.1.20.0\build\native\Microsoft.ML.OnnxRuntime.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.OnnxRuntime.1.20.0\build\native\Microsoft.ML.OnnxRuntime.targets'))" />
+    <Error Condition="!Exists('..\packages\Google.Protobuf.Tools.3.28.3\build\Google.Protobuf.Tools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Google.Protobuf.Tools.3.28.3\build\Google.Protobuf.Tools.targets'))" />
   </Target>
 </Project>
