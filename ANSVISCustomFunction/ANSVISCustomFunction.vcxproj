@@ -105,6 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\affine_alignment.cpp" />
     <ClCompile Include="ANSVISCustomFunction.cpp" />
     <ClCompile Include="src\core\ort_handler.cpp" />
     <ClCompile Include="src\core\ort_utils.cpp" />
@@ -135,6 +137,7 @@
     <ClCompile Include="src\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\affine_alignment.h" />
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\constants.h" />
     <ClInclude Include="src\core\ort_config.h" />

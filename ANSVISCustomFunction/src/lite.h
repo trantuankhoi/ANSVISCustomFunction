@@ -8,5 +8,6 @@
 #include "types.h"
 #include "utils.h"
 #include "scrfd.h"
+#include "affine_alignment.h"
 
 #endif //LITE_AI_LITE_H
