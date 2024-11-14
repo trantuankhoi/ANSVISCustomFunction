@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ada_face.cpp" />
     <ClCompile Include="src\affine_alignment.cpp" />
     <ClCompile Include="ANSVISCustomFunction.cpp" />
     <ClCompile Include="src\core\ort_handler.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="src\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ada_face.h" />
     <ClInclude Include="src\affine_alignment.h" />
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\constants.h" />

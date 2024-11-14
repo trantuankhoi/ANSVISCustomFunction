@@ -9,5 +9,6 @@
 #include "utils.h"
 #include "scrfd.h"
 #include "affine_alignment.h"
+#include "ada_face.h"
 
 #endif //LITE_AI_LITE_H
