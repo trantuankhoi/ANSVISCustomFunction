@@ -1,0 +1,13 @@
+#ifndef LITE_AI_CONFIG_H
+#define LITE_AI_CONFIG_H
+
+#define ENABLE_ONNXRUNTIME
+#define ENABLE_TENSORRT
+/* #undef ENABLE_MNN */
+/* #undef ENABLE_NCNN */
+/* #undef ENABLE_TNN */
+/* #undef ENABLE_ONNXRUNTIME_CUDA */
+#define ENABLE_OPENCV_VIDEOIO
+#define ENABLE_DEBUG_STRING
+
+#endif //LITE_AI_CONFIG_H
