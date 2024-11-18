@@ -136,6 +136,7 @@
     <ClCompile Include="src\core\ort_handler.cpp" />
     <ClCompile Include="src\core\ort_utils.cpp" />
     <ClCompile Include="src\face_database.cpp" />
+    <ClCompile Include="inference.cpp" />
     <ClCompile Include="src\scrfd.cpp" />
     <ClCompile Include="src\utils.cpp" />
   </ItemGroup>

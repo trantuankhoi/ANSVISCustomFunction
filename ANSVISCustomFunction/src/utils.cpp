@@ -159,7 +159,7 @@ void lite::utils::draw_boxes_with_landmarks_inplace(cv::Mat& mat_inplace, const 
                 if (box_kps.box.label_text && text)
                 {
                     std::string label_text(box_kps.box.label_text);
-                    label_text = label_text + ":" + std::to_string(box_kps.box.score).substr(0, 4);
+                    label_text = label_text + ":" + std::to_string(box_kps.box.label).substr(0, 4);
                     cv::putText(mat_inplace, label_text, box_kps.box.tl(), cv::FONT_HERSHEY_SIMPLEX,
                         0.6f, cv::Scalar(0, 255, 0), 2);
 

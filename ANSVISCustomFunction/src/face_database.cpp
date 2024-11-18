@@ -52,3 +52,50 @@ bool FaceStorage::load(const std::string& filename, std::vector<FaceData>& datab
     }
     return true;
 }
+
+float FaceStorage::cosine_similarity(const std::vector<float>& vec1, const std::vector<float>& vec2) {
+    if (vec1.size() != vec2.size() || vec1.empty()) {
+        return -1.0f;
+    }
+
+    float dot_product = 0.0f;
+    float norm1 = 0.0f;
+    float norm2 = 0.0f;
+
+    for (size_t i = 0; i < vec1.size(); i++) {
+        dot_product += vec1[i] * vec2[i];
+        norm1 += vec1[i] * vec1[i];
+        norm2 += vec2[i] * vec2[i];
+    }
+
+    if (norm1 == 0.0f || norm2 == 0.0f) {
+        return -1.0f;
+    }
+
+    return dot_product / (std::sqrt(norm1) * std::sqrt(norm2));
+}
+
+std::pair<std::string, float> FaceStorage::match_face(const std::vector<float>& query_embedding,
+    const std::vector<FaceData>& database,
+    float similarity_threshold) {
+    float best_similarity = -1.0f;
+    std::string best_match = "";
+
+    for (const auto& user : database) {
+        for (const auto& stored_embedding : user.embeddings) {
+            float similarity = cosine_similarity(query_embedding, stored_embedding);
+
+            if (similarity > best_similarity) {
+                best_similarity = similarity;
+                best_match = user.username;
+            }
+        }
+    }
+
+    // Return empty string if similarity is below threshold
+    if (best_similarity < similarity_threshold) {
+        return std::make_pair("", best_similarity);
+    }
+
+    return std::make_pair(best_match, best_similarity);
+}

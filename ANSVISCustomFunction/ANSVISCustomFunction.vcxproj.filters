@@ -42,6 +42,9 @@
     <ClCompile Include="create_db.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="inference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\ort_handler.h">

@@ -3,7 +3,7 @@
 #include <filesystem>
 
 
-int main(int argc, char* argv[]) {
+int creat_db(int argc, char* argv[]) {
     std::string face_extraction_path = "adaface_ir_101_webface4m.onnx";
     std::string root_dir = "facedb";
     std::string output_file = "face_database.bin";
