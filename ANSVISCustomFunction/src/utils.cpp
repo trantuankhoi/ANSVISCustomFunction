@@ -133,7 +133,7 @@ void lite::utils::draw_boxes_inplace(cv::Mat& mat_inplace, const std::vector<typ
         if (box.flag)
         {
             cv::rectangle(mat_inplace, box.rect(), cv::Scalar(255, 255, 0), 2);
-            if (box.label_text)
+            if (!box.label_text.empty())
             {
                 std::string label_text(box.label_text);
                 label_text = label_text + ":" + std::to_string(box.score).substr(0, 4);
@@ -156,10 +156,14 @@ void lite::utils::draw_boxes_with_landmarks_inplace(cv::Mat& mat_inplace, const 
             if (box_kps.box.flag)
             {
                 cv::rectangle(mat_inplace, box_kps.box.rect(), cv::Scalar(255, 255, 0), 2);
-                if (box_kps.box.label_text && text)
+                if (!box_kps.box.label_text.empty() && text)
                 {
                     std::string label_text(box_kps.box.label_text);
-                    label_text = label_text + ":" + std::to_string(box_kps.box.label).substr(0, 4);
+                    if (label_text == "Unknown")
+                    {
+                        label_text = "";
+                    }
+                    /*label_text = label_text + ":" + std::to_string(box_kps.box.label).substr(0, 4);*/
                     cv::putText(mat_inplace, label_text, box_kps.box.tl(), cv::FONT_HERSHEY_SIMPLEX,
                         0.6f, cv::Scalar(0, 255, 0), 2);
 
@@ -187,7 +191,7 @@ cv::Mat lite::utils::draw_boxes_with_landmarks(const cv::Mat& mat, const std::ve
             if (box_kps.box.flag)
             {
                 cv::rectangle(canva, box_kps.box.rect(), cv::Scalar(255, 255, 0), 2);
-                if (box_kps.box.label_text && text)
+                if (!box_kps.box.label_text.empty() && text)
                 {
                     std::string label_text(box_kps.box.label_text);
                     label_text = label_text + ":" + std::to_string(box_kps.box.score).substr(0, 4);

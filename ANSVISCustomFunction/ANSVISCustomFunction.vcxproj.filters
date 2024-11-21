@@ -100,13 +100,20 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="scrfd_10g_bnkps.onnx" />
+    <None Include="packages.config" />
     <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime_providers_shared.dll" />
+    <None Include="adaface_ir_101_webface4m.onnx" />
+    <None Include="face_database.bin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="largest_selfie.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="samples\sample2.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

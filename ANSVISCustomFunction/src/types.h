@@ -33,7 +33,7 @@ namespace lite {
             value_type x2;
             value_type y2;
             score_type score;
-            const char* label_text;
+            std::string label_text;
             unsigned int label; // for general object detection.
             bool flag; // future use.
             // convert type.
@@ -58,7 +58,7 @@ namespace lite {
             BoundingBoxType() :
                 x1(static_cast<value_type>(0)), y1(static_cast<value_type>(0)),
                 x2(static_cast<value_type>(0)), y2(static_cast<value_type>(0)),
-                score(static_cast<score_type>(0)), label_text(nullptr), label(0),
+                score(static_cast<score_type>(0)), label_text(""), label(0),
                 flag(false)
             {
                 types::__assert_type<value_type, score_type>();

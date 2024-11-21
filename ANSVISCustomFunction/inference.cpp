@@ -12,14 +12,14 @@ private:
     ortcv::AdaFace* face_extractor;
     AffineAlignment aligner;
     std::vector<FaceData> face_database;
-    float similarity_threshold = 0.6f;
+    float similarity_threshold = 0.4f;
 	FaceStorage storage;
 
 public:
     FaceRecognizer(const std::string& detection_model,
         const std::string& extraction_model,
         const std::string& database_path,
-        float threshold = 0.6f)
+        float threshold = 0.4f)
         : aligner(cv::Size(112, 112)), similarity_threshold(threshold) {
 
         face_detector = new ortcv::SCRFD(detection_model);
@@ -159,8 +159,8 @@ int main(int argc, char* argv[]) {
     std::string face_detection_path = "scrfd_10g_bnkps.onnx";
     std::string face_extraction_path = "adaface_ir_101_webface4m.onnx";
     std::string database_path = "face_database.bin";
-    std::string input_path = "cropped.mp4";
-    std::string output_path = "output.mp4";
+    std::string input_path = "samples";
+    std::string output_path = "results";
 
     try {
         FaceRecognizer recognizer(face_detection_path, face_extraction_path, database_path);
