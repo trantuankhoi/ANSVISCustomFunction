@@ -72,7 +72,7 @@ namespace ortcv
             float score_threshold,
             float img_height,
             float img_width,
-            std::vector<types::BoxfWithLandmarks>& bbox_kps_collection);
+            std::vector<types::CustomObject>& bbox_kps_collection);
 
         void generate_bboxes_kps_single_stride(const SCRFDScaleParams& scale_params,
             Ort::Value& score_pred,
@@ -82,20 +82,20 @@ namespace ortcv
             float score_threshold,
             float img_height,
             float img_width,
-            std::vector<types::BoxfWithLandmarks>& bbox_kps_collection);
+            std::vector<types::CustomObject>& bbox_kps_collection);
 
         void generate_bboxes_kps(const SCRFDScaleParams& scale_params,
-            std::vector<types::BoxfWithLandmarks>& bbox_kps_collection,
+            std::vector<types::CustomObject>& bbox_kps_collection,
             std::vector<Ort::Value>& output_tensors,
             float score_threshold, float img_height,
             float img_width); // rescale & exclude
 
-        void nms_bboxes_kps(std::vector<types::BoxfWithLandmarks>& input,
-            std::vector<types::BoxfWithLandmarks>& output,
+        void nms_bboxes_kps(std::vector<types::CustomObject>& input,
+            std::vector<types::CustomObject>& output,
             float iou_threshold, unsigned int topk);
 
     public:
-        void detect(const cv::Mat& mat, std::vector<types::BoxfWithLandmarks>& detected_boxes_kps,
+        void detect(const cv::Mat& mat, std::vector<types::CustomObject>& detected_boxes_kps,
             float score_threshold = 0.45f, float iou_threshold = 0.45f,
             unsigned int topk = 400);
 

@@ -29,6 +29,7 @@ namespace lite
         LITE_EXPORTS void draw_gender_inplace(cv::Mat& mat_inplace, types::Gender& gender);
         LITE_EXPORTS void draw_emotion_inplace(cv::Mat& mat_inplace, types::Emotions& emotions);
         LITE_EXPORTS void draw_boxes_with_landmarks_inplace(cv::Mat& mat_inplace, const std::vector<types::BoxfWithLandmarks>& boxes_kps, bool text = false);
+        LITE_EXPORTS void draw_boxes_with_landmarks_inplace(cv::Mat& mat_inplace, const std::vector<types::CustomObjectType>& boxes_kps, bool text = false);
         // Object Detection Utils
         LITE_EXPORTS void hard_nms(std::vector<types::Boxf>& input, std::vector<types::Boxf>& output, float iou_threshold, unsigned int topk);
         LITE_EXPORTS void blending_nms(std::vector<types::Boxf>& input, std::vector<types::Boxf>& output, float iou_threshold, unsigned int topk);

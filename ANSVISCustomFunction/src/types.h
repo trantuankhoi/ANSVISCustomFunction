@@ -109,6 +109,51 @@ namespace lite {
             };
         } BoxfWithLandmarks;
 
+        typedef struct LITE_EXPORTS CustomObjectType
+        {
+            int classId{ 0 };
+            int trackId{ 0 };
+            std::string className{};
+            float confidence{ 0.0 };
+            cv::Rect box{};
+            std::vector<cv::Point> polygon;
+            cv::Mat mask;             //Json string mask ="point1.x,point1.y,...."
+            std::vector<float> kps{};   // Pose exsimate keypoint
+            std::string extraInfo;      // More information such as facial recognition
+            Landmarks landmarks;
+            bool flag;
+
+            //float calculate_iou(const cv::Rect& rect1, const cv::Rect& rect2);
+            float calculate_iou(const cv::Rect& rect1, const cv::Rect& rect2) {
+                // Calculate intersection rectangle
+                int x1 = std::max(rect1.x, rect2.x);
+                int y1 = std::max(rect1.y, rect2.y);
+                int x2 = std::min(rect1.x + rect1.width, rect2.x + rect2.width);
+                int y2 = std::min(rect1.y + rect1.height, rect2.y + rect2.height);
+
+                // Check if there is an intersection
+                if (x2 <= x1 || y2 <= y1) {
+                    return 0.0f;
+                }
+
+                // Calculate intersection area
+                float intersection_area = static_cast<float>((x2 - x1) * (y2 - y1));
+
+                // Calculate union area
+                float rect1_area = static_cast<float>(rect1.width * rect1.height);
+                float rect2_area = static_cast<float>(rect2.width * rect2.height);
+                float union_area = rect1_area + rect2_area - intersection_area;
+
+                // Calculate IOU
+                return intersection_area / union_area;
+            }
+            
+            CustomObjectType() : flag(false)
+            {
+            };
+
+        } CustomObject;
+
         typedef struct LITE_EXPORTS EulerAnglesType
         {
             float yaw;

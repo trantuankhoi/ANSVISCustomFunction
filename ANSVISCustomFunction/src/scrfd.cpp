@@ -79,7 +79,7 @@ Ort::Value SCRFD::transform(const cv::Mat& mat_rs)
         input_values_handler, ortcv::utils::transform::CHW);
 }
 
-void SCRFD::detect(const cv::Mat& mat, std::vector<types::BoxfWithLandmarks>& detected_boxes_kps,
+void SCRFD::detect(const cv::Mat& mat, std::vector<types::CustomObject>& detected_boxes_kps,
     float score_threshold, float iou_threshold, unsigned int topk)
 {
     if (mat.empty()) return;
@@ -101,7 +101,7 @@ void SCRFD::detect(const cv::Mat& mat, std::vector<types::BoxfWithLandmarks>& de
         &input_tensor, 1, output_node_names.data(), num_outputs
     );
     // 3. rescale & exclude.
-    std::vector<types::BoxfWithLandmarks> bbox_kps_collection;
+    std::vector<types::CustomObject> bbox_kps_collection;
     this->generate_bboxes_kps(scale_params, bbox_kps_collection, output_tensors,
         score_threshold, img_height, img_width);
     // 4. hard nms with topk.
@@ -140,7 +140,7 @@ void SCRFD::generate_points(const int target_height, const int target_width)
 }
 
 void SCRFD::generate_bboxes_kps(const SCRFDScaleParams& scale_params,
-    std::vector<types::BoxfWithLandmarks>& bbox_kps_collection,
+    std::vector<types::CustomObject>& bbox_kps_collection,
     std::vector<Ort::Value>& output_tensors,
     float score_threshold,
     float img_height,
@@ -193,7 +193,7 @@ void SCRFD::generate_bboxes_kps(const SCRFDScaleParams& scale_params,
 void SCRFD::generate_bboxes_single_stride(
     const SCRFDScaleParams& scale_params, Ort::Value& score_pred, Ort::Value& bbox_pred,
     unsigned int stride, float score_threshold, float img_height, float img_width,
-    std::vector<types::BoxfWithLandmarks>& bbox_kps_collection)
+    std::vector<types::CustomObject>& bbox_kps_collection)
 {
     unsigned int nms_pre_ = (stride / 8) * nms_pre; // 1 * 1000,2*1000,...
     nms_pre_ = nms_pre_ >= nms_pre ? nms_pre_ : nms_pre;
@@ -226,19 +226,22 @@ void SCRFD::generate_bboxes_single_stride(
         float r = offsets[2]; // right
         float b = offsets[3]; // bottom
 
-        types::BoxfWithLandmarks box_kps;
+        types::CustomObject box_kps;
         float x1 = ((cx - l) * s - (float)dw) / ratio;  // cx - l x1
         float y1 = ((cy - t) * s - (float)dh) / ratio;  // cy - t y1
         float x2 = ((cx + r) * s - (float)dw) / ratio;  // cx + r x2
         float y2 = ((cy + b) * s - (float)dh) / ratio;  // cy + b y2
-        box_kps.box.x1 = std::max(0.f, x1);
-        box_kps.box.y1 = std::max(0.f, y1);
-        box_kps.box.x2 = std::min(img_width - 1.f, x2);
-        box_kps.box.y2 = std::min(img_height - 1.f, y2);
-        box_kps.box.score = cls_conf;
-        box_kps.box.label = 1;
-        box_kps.box.label_text = "face";
-        box_kps.box.flag = true;
+        //box_kps.box.x1 = std::max(0.f, x1);
+        //box_kps.box.y1 = std::max(0.f, y1);
+        //box_kps.box.x2 = std::min(img_width - 1.f, x2);
+        //box_kps.box.y2 = std::min(img_height - 1.f, y2);
+        box_kps.box.x = std::max(0, static_cast<int>(x1));
+        box_kps.box.y = std::max(0, static_cast<int>(y1));
+        box_kps.box.width = std::min(static_cast<int>(img_width - box_kps.box.x - 1), static_cast<int>(x2 - x1));
+        box_kps.box.height = std::min(static_cast<int>(img_height - box_kps.box.y - 1), static_cast<int>(y2 - y1));
+        box_kps.confidence = cls_conf;
+        box_kps.classId = 1;
+        box_kps.className = "face";
         box_kps.flag = true;
 
         bbox_kps_collection.push_back(box_kps);
@@ -252,8 +255,8 @@ void SCRFD::generate_bboxes_single_stride(
     {
         std::sort(
             bbox_kps_collection.begin(), bbox_kps_collection.end(),
-            [](const types::BoxfWithLandmarks& a, const types::BoxfWithLandmarks& b)
-            { return a.box.score > b.box.score; }
+            [](const types::CustomObject& a, const types::CustomObject& b)
+            { return a.confidence > b.confidence; }
         ); // sort inplace
         // trunc
         bbox_kps_collection.resize(nms_pre_);
@@ -264,7 +267,7 @@ void SCRFD::generate_bboxes_single_stride(
 void SCRFD::generate_bboxes_kps_single_stride(
     const SCRFDScaleParams& scale_params, Ort::Value& score_pred, Ort::Value& bbox_pred,
     Ort::Value& kps_pred, unsigned int stride, float score_threshold, float img_height,
-    float img_width, std::vector<types::BoxfWithLandmarks>& bbox_kps_collection)
+    float img_width, std::vector<types::CustomObject>& bbox_kps_collection)
 {
     unsigned int nms_pre_ = (stride / 8) * nms_pre; // 1 * 1000,2*1000,...
     nms_pre_ = nms_pre_ >= nms_pre ? nms_pre_ : nms_pre;
@@ -298,19 +301,19 @@ void SCRFD::generate_bboxes_kps_single_stride(
         float r = offsets[2]; // right
         float b = offsets[3]; // bottom
 
-        types::BoxfWithLandmarks box_kps;
+        types::CustomObject box_kps;
         float x1 = ((cx - l) * s - (float)dw) / ratio;  // cx - l x1
         float y1 = ((cy - t) * s - (float)dh) / ratio;  // cy - t y1
         float x2 = ((cx + r) * s - (float)dw) / ratio;  // cx + r x2
         float y2 = ((cy + b) * s - (float)dh) / ratio;  // cy + b y2
-        box_kps.box.x1 = std::max(0.f, x1);
-        box_kps.box.y1 = std::max(0.f, y1);
-        box_kps.box.x2 = std::min(img_width - 1.f, x2);
-        box_kps.box.y2 = std::min(img_height - 1.f, y2);
-        box_kps.box.score = cls_conf;
-        box_kps.box.label = 1;
-        box_kps.box.label_text = "face";
-        box_kps.box.flag = true;
+        box_kps.box.x = std::max(0, static_cast<int>(x1));
+        box_kps.box.y = std::max(0, static_cast<int>(y1));
+        box_kps.box.width = std::min(static_cast<int>(img_width - box_kps.box.x - 1), static_cast<int>(x2 - x1));
+        box_kps.box.height = std::min(static_cast<int>(img_height - box_kps.box.y - 1), static_cast<int>(y2 - y1));
+        box_kps.confidence = cls_conf;
+        box_kps.classId = 1;
+        box_kps.className = "face";
+        box_kps.flag = true;
 
         // landmarks
         const float* kps_offsets = kps_ptr + i * 10;
@@ -339,8 +342,8 @@ void SCRFD::generate_bboxes_kps_single_stride(
     {
         std::sort(
             bbox_kps_collection.begin(), bbox_kps_collection.end(),
-            [](const types::BoxfWithLandmarks& a, const types::BoxfWithLandmarks& b)
-            { return a.box.score > b.box.score; }
+            [](const types::CustomObject& a, const types::CustomObject& b)
+            { return a.confidence > b.confidence; }
         ); // sort inplace
         // trunc
         bbox_kps_collection.resize(nms_pre_);
@@ -348,15 +351,15 @@ void SCRFD::generate_bboxes_kps_single_stride(
 
 }
 
-void SCRFD::nms_bboxes_kps(std::vector<types::BoxfWithLandmarks>& input,
-    std::vector<types::BoxfWithLandmarks>& output,
+void SCRFD::nms_bboxes_kps(std::vector<types::CustomObject>& input,
+    std::vector<types::CustomObject>& output,
     float iou_threshold, unsigned int topk)
 {
     if (input.empty()) return;
     std::sort(
         input.begin(), input.end(),
-        [](const types::BoxfWithLandmarks& a, const types::BoxfWithLandmarks& b)
-        { return a.box.score > b.box.score; }
+        [](const types::CustomObject& a, const types::CustomObject& b)
+        { return a.confidence > b.confidence; }
     );
     const unsigned int box_num = input.size();
     std::vector<int> merged(box_num, 0);
@@ -365,7 +368,7 @@ void SCRFD::nms_bboxes_kps(std::vector<types::BoxfWithLandmarks>& input,
     for (unsigned int i = 0; i < box_num; ++i)
     {
         if (merged[i]) continue;
-        std::vector<types::BoxfWithLandmarks> buf;
+        std::vector<types::CustomObject> buf;
 
         buf.push_back(input[i]);
         merged[i] = 1;
@@ -374,7 +377,8 @@ void SCRFD::nms_bboxes_kps(std::vector<types::BoxfWithLandmarks>& input,
         {
             if (merged[j]) continue;
 
-            float iou = static_cast<float>(input[i].box.iou_of(input[j].box));
+            //float iou = static_cast<float>(input[i].box.iou_of(input[j].box));
+            float iou = input[i].calculate_iou(input[i].box, input[j].box);
 
             if (iou > iou_threshold)
             {

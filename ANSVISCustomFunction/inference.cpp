@@ -13,7 +13,7 @@ private:
     AffineAlignment aligner;
     std::vector<FaceData> face_database;
     float similarity_threshold = 0.4f;
-	FaceStorage storage;
+    FaceStorage storage;
 
 public:
     FaceRecognizer(const std::string& detection_model,
@@ -42,11 +42,11 @@ public:
 
     cv::Mat processFrame(const cv::Mat& frame) {
         // Prepare output vector for detected faces
-        std::vector<lite::types::BoxfWithLandmarks> detected_boxes;
+        std::vector<lite::types::CustomObjectType> detected_boxes;
         face_detector->detect(frame, detected_boxes);
 
         // Convert detections to format compatible with utils visualization
-        std::vector<lite::types::BoxfWithLandmarks> boxes_with_info = detected_boxes;
+        std::vector<lite::types::CustomObjectType> boxes_with_info = detected_boxes;
 
         // Process each detected face
         for (size_t i = 0; i < detected_boxes.size(); i++) {
@@ -74,9 +74,9 @@ public:
                 );
 
                 // Update box information for visualization
-                boxes_with_info[i].box.label_text = identity.empty() ? "Unknown" : identity.c_str();
-                boxes_with_info[i].box.score = similarity;
-                boxes_with_info[i].box.flag = true;
+                boxes_with_info[i].className = identity.empty() ? "Unknown" : identity.c_str();
+                boxes_with_info[i].confidence = similarity;
+                boxes_with_info[i].flag = true;
             }
         }
 
