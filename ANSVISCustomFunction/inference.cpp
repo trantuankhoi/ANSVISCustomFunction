@@ -5,6 +5,9 @@
 #include <queue>
 #include "src/face_database.h"
 #include "src/utils.h"
+#include <fstream>
+#include "nlohmann/json.hpp"
+
 
 class FaceRecognizer {
 private:
@@ -14,6 +17,8 @@ private:
     std::vector<FaceData> face_database;
     float similarity_threshold = 0.4f;
     FaceStorage storage;
+    std::map<int, std::vector<lite::types::CustomObjectType>> logs;
+    int c = 0;
 
 public:
     FaceRecognizer(const std::string& detection_model,
@@ -38,6 +43,10 @@ public:
     ~FaceRecognizer() {
         delete face_detector;
         delete face_extractor;
+    }
+
+    std::map<int, std::vector<lite::types::CustomObjectType>> get_logs() {
+        return logs;
     }
 
     cv::Mat processFrame(const cv::Mat& frame) {
@@ -84,9 +93,67 @@ public:
         cv::Mat visualized = frame.clone();
         lite::utils::draw_boxes_with_landmarks_inplace(visualized, boxes_with_info, true);
 
+        // Logging
+        logs[c] = boxes_with_info;
+
+        c++;
+
         return visualized;
     }
 };
+
+
+
+void save_log(const std::map<int, std::vector<lite::types::CustomObjectType>>& logs, const std::string& log_path = "log.json") {
+    nlohmann::json json_data;
+
+    // Convert each frame's data to JSON
+    for (const auto& [frame_number, detections] : logs) {
+        nlohmann::json frame_data = nlohmann::json::array();
+
+        for (const auto& detection : detections) {
+            nlohmann::json face_data;
+
+            // Basic detection info
+            face_data["class_name"] = detection.className;
+            face_data["confidence"] = detection.confidence;
+            face_data["recognized"] = detection.flag;
+
+            // Bounding box
+            face_data["bbox"] = {
+                {"x1", detection.box.x},
+                {"y1", detection.box.y},
+                {"x2", detection.box.x + detection.box.width},
+                {"y2", detection.box.y + detection.box.height}
+            };
+
+            // Landmarks
+            nlohmann::json landmarks = nlohmann::json::array();
+            for (const auto& point : detection.landmarks.points) {
+                landmarks.push_back({
+                    {"x", point.x},
+                    {"y", point.y}
+                    });
+            }
+            face_data["landmarks"] = landmarks;
+
+            frame_data.push_back(face_data);
+        }
+
+        json_data[std::to_string(frame_number)] = frame_data;
+    }
+
+    // Write to file
+    std::ofstream output_file(log_path);
+    if (output_file.is_open()) {
+        output_file << json_data.dump(2);  // Use indent=2 for pretty printing
+        output_file.close();
+        std::cout << "Successfully saved logs to " << log_path << std::endl;
+    }
+    else {
+        std::cerr << "Error: Could not open file " << log_path << " for writing" << std::endl;
+    }
+}
 
 void processImages(FaceRecognizer& recognizer, const std::string& input_dir, const std::string& output_dir) {
     std::filesystem::create_directories(output_dir);
@@ -105,6 +172,8 @@ void processImages(FaceRecognizer& recognizer, const std::string& input_dir, con
             std::cout << "Processed: " << entry.path().filename() << std::endl;
         }
     }
+
+    save_log(recognizer.get_logs());
 }
 
 void processVideo(FaceRecognizer& recognizer, const std::string& input_path, const std::string& output_path) {
@@ -153,14 +222,16 @@ void processVideo(FaceRecognizer& recognizer, const std::string& input_path, con
     cap.release();
     writer.release();
     cv::destroyAllWindows();
+
+    save_log(recognizer.get_logs());
 }
 
 int main(int argc, char* argv[]) {
-    std::string face_detection_path = "scrfd_10g_bnkps.onnx";
-    std::string face_extraction_path = "adaface_ir_101_webface4m.onnx";
+    std::string face_detection_path = "models/scrfd_10g_bnkps.onnx";
+    std::string face_extraction_path = "models/adaface_ir_101_webface4m.onnx";
     std::string database_path = "face_database.bin";
-    std::string input_path = "samples";
-    std::string output_path = "results";
+    std::string input_path = "cam7_checkin_wo_mask.mp4";
+    std::string output_path = "result.mp4";
 
     try {
         FaceRecognizer recognizer(face_detection_path, face_extraction_path, database_path);
